@@ -16,7 +16,7 @@ const MainBanner = () => {
             <Link to={"/products"} className='group flex items-center gap-2 px-7 md:px-9 py-3 bg-primary
             hover:bg-primary-dull transition rounded text-white cursor-pointer'>
             Shop now
-            <img className='md-hidden transition group-focus:translate-x-1' src={assets.white_arrow_icon} alt="arrow" />
+            <img className='md:hidden transition group-focus:translate-x-1' src={assets.white_arrow_icon} alt="arrow" />
             </Link>
 
             <Link to={"/products"} className='group hidden md:flex items-center gap-2 px-9 py-3 cursor-pointer'>
