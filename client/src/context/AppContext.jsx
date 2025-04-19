@@ -58,13 +58,9 @@ export const AppContextProvider = ({children})=>{
     }
 
     // Get cart item count
-    const getCartCount = ()=>{
-        let totalCount = 0;
-        for(const item in cartItems){
-            totalCount += cartItems[item]
-        }
-        return totalCount;
-    }
+    const getCartCount = () => {
+        return Object.keys(cartItems).length;
+    };
 
     // Get cart total Amount
     const getCartAmount =()=>{
@@ -74,8 +70,8 @@ export const AppContextProvider = ({children})=>{
             if(cartItems[items]>0){
                 totalAmount +=itemInfo.offerPrice*cartItems[items]
             }
-            return Math.floor(totalAmount*100)/100
         }
+        return Math.floor(totalAmount*100)/100;
     }
 
 
