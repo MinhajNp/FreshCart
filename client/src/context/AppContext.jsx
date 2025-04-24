@@ -19,7 +19,7 @@ export const AppContextProvider = ({children})=>{
     const [showUserLogin, setShowUserLogin]= useState(false)
     const [products, setProducts] = useState([])
 
-    const [cartItems, SetCartItems] = useState({});
+    const [cartItems, setCartItems] = useState({});
     const [searchQuery, setSearchQuery] = useState({})
 
     // fetch seller status
@@ -43,7 +43,7 @@ export const AppContextProvider = ({children})=>{
             const { data } = await axios.get('/api/user/is-auth');
             if(data.success){
                 setUser(data.user);
-                SetCartItems(data.user.cartItems);
+                setCartItems(data.user.cartItems);
             }
         } catch (error) {
             setUser(null)
@@ -72,7 +72,7 @@ export const AppContextProvider = ({children})=>{
         }else{
             cartData[itemId]=1;
         }
-        SetCartItems(cartData);
+        setCartItems(cartData);
         toast.success("Added to Cart")
     }
 
@@ -80,7 +80,7 @@ export const AppContextProvider = ({children})=>{
     const updateCartItem = (itemId, quantity)=>{
         let cartData = structuredClone(cartItems);
         cartData[itemId]=quantity;
-        SetCartItems(cartData);
+        setCartItems(cartData);
         toast.success("Cart Updated")
     }
 
@@ -94,7 +94,7 @@ export const AppContextProvider = ({children})=>{
             }
         }
         toast.success("Removed from Cart")
-        SetCartItems(cartData);
+        setCartItems(cartData);
     }
 
     // Get cart item count
@@ -142,7 +142,7 @@ export const AppContextProvider = ({children})=>{
         showUserLogin, setShowUserLogin, products, currency,
          addToCart, updateCartItem, removeFromCart, cartItems,
         searchQuery, setSearchQuery,  getCartAmount, getCartCount,
-         axios, fetchProducts}
+         axios, fetchProducts, setCartItems}
     return <AppContext.Provider value={value}>
         {children}
     </AppContext.Provider>

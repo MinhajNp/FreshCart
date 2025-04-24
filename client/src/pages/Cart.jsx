@@ -5,7 +5,7 @@ import toast from "react-hot-toast"
 
 const Cart = () => {
     const {products, currency, cartItems, removeFromCart, getCartCount, 
-        updateCartItem, navigate, getCartAmount, axios, user} = useAppContext()
+        updateCartItem, navigate, getCartAmount, axios, user, setCartItems} = useAppContext()
     const [cartArray, setCartArray] = useState([])
     const [addresses, setAddresses] = useState()   
     const [showAddress, setShowAddress] = useState(false) 
@@ -27,6 +27,9 @@ const Cart = () => {
             const { data } = await axios.get('/api/address/get')
             if(data.success){
                 setAddresses(data.addresses);
+                if(data.addresses.length > 0){
+                    setSelectedAddress(data.addresses[0])
+                }
             }else{
                 toast.error(data.message)
             }
@@ -36,7 +39,33 @@ const Cart = () => {
     }
 
     const placeOrder = async ()=>{
+        try {
+            if(!selectedAddress){
+                return toast.error("Please Select Delivery Address")
+            }
+           
+            // place order with COD
+            if(paymentOption==="COD"){
+                const {data} = await axios.post('/api/order/cod',{
+                    userId : user._id,
+                    items: cartArray.map((item) => ({
+                        product: item._id,
+                        quantity: item.quantity
+                    })),
+                        address: selectedAddress._id
+                })
 
+                if(data.success){
+                    toast.success(data.message)
+                    setCartItems({})
+                    navigate('/my-orders')
+                }else{
+                    toast.error(data.message)
+                }
+            }
+        } catch (error) {
+           toast.error(error.message) 
+        }
     }
     useEffect(()=>{
         if(products.length > 0 && cartItems){
@@ -116,7 +145,7 @@ const Cart = () => {
                         {showAddress && (
                             <div className="absolute top-12 py-1 bg-white border border-gray-300 text-sm w-full">
                                 {addresses.map((address, index)=>(
-                                    <p onClick={() => {setSelectedAddress(address); setShowAddress(false)}} className="text-gray-500 p-2 hover:bg-gray-100">
+                                    <p key={index} onClick={() => {setSelectedAddress(address); setShowAddress(false)}} className="text-gray-500 p-2 hover:bg-gray-100">
                                     {address.street}, {address.city}, {address.country}
                                 </p>)) }
                                 <p onClick={() => navigate('/addAddress')} className="text-primary text-center cursor-pointer p-2 hover:bg-primary/10">
