@@ -14,7 +14,7 @@ const ProductDetails = () => {
     const [thumbnail, setThumbnail] = useState(null);
 
     const product = products.find((item)=> item._id === id)
-    setLoading(false);
+    
 
     useEffect(()=>{
         if(products.length >0){
@@ -23,6 +23,7 @@ const ProductDetails = () => {
             category)
             setRelatedProducts(productsCopy.slice(0,5))
         }
+        setLoading(false)
     },[products])
 
     useEffect(()=>{
