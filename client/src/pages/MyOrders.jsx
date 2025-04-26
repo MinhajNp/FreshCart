@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useAppContext } from '../context/AppContext';
 import { dummyOrders } from '../assets/assets';
+import Loading from '../components/Loading';
 
 const MyOrders = () => {
     const [myOrders, setMyOrders] = useState([]);
-    const {currency, axios, user} = useAppContext()
+    const {currency, axios, user, loading, setLoading} = useAppContext()
 
     const fetchMyOrders = async ()=>{
         try {
             const { data } = await axios.get('/api/order/user');
             if(data.success){
                 setMyOrders(data.orders);
+                setLoading(false);
             }
         } catch (error) {
             console.log(error)
@@ -23,6 +25,9 @@ const MyOrders = () => {
         }
         
     },[user])
+    if(loading){
+       return ( <Loading/> )
+    }
   return (
     <div className='mt-16 pb-16'>
         <div className='flex flex-col items-end w-max mb-8'>

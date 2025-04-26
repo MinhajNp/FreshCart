@@ -2,10 +2,11 @@ import { useEffect, useState } from "react"
 import { useAppContext } from "../context/AppContext"
 import { assets, dummyAddress } from "../assets/assets"
 import toast from "react-hot-toast"
+import Loading from "../components/Loading"
 
 const Cart = () => {
     const {products, currency, cartItems, removeFromCart, getCartCount, 
-        updateCartItem, navigate, getCartAmount, axios, user, setCartItems, deleteFromCart} = useAppContext()
+        updateCartItem, navigate, getCartAmount, axios, user, setCartItems, deleteFromCart, loading, setLoading} = useAppContext()
     const [cartArray, setCartArray] = useState([])
     const [addresses, setAddresses] = useState()   
     const [showAddress, setShowAddress] = useState(false) 
@@ -20,6 +21,7 @@ const Cart = () => {
             tempArray.push(product);
         }
         setCartArray(tempArray);
+        setLoading(false)
     }
 
     const getUserAddress = async()=>{
@@ -46,7 +48,7 @@ const Cart = () => {
             if(!selectedAddress){
                 return toast.error("Please Select Delivery Address")
             }
-           
+            setLoading(true);
             // place order with COD
             if(paymentOption==="COD"){
                 const {data} = await axios.post('/api/order/cod',{
@@ -57,7 +59,7 @@ const Cart = () => {
                     })),
                         address: selectedAddress._id
                 })
-
+                setLoading(false)
                 if(data.success){
                     toast.success(data.message)
                     setCartItems({})
@@ -75,7 +77,7 @@ const Cart = () => {
                     })),
                         address: selectedAddress._id
                 })
-
+                setLoading(false)
                 if(data.success){
                     window.location.replace(data.url)
                 }else{
@@ -97,6 +99,9 @@ const Cart = () => {
             getUserAddress();
         }
     },[user])
+    if(loading){
+           return ( <Loading/> )
+        }
     return products.length > 0 && cartItems ?(
         <div className="flex flex-col md:flex-row mt-16">
             <div className='flex-1 max-w-4xl'>

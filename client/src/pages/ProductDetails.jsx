@@ -3,16 +3,18 @@ import { useAppContext } from "../context/AppContext";
 import { Link, useParams } from "react-router-dom";
 import { assets } from "../assets/assets";
 import ProductCard from "../components/ProductCard";
+import Loading from "../components/Loading";
 
 const ProductDetails = () => {
 
 
-    const {products, currency, navigate, addToCart} = useAppContext()
+    const {products, currency, navigate, addToCart, loading, setLoading} = useAppContext()
     const {id} = useParams();
     const [relatedProducts, setRelatedProducts] = useState([])
     const [thumbnail, setThumbnail] = useState(null);
 
     const product = products.find((item)=> item._id === id)
+    setLoading(false);
 
     useEffect(()=>{
         if(products.length >0){
@@ -26,7 +28,9 @@ const ProductDetails = () => {
     useEffect(()=>{
         setThumbnail(product?.image[0] ? product.image[0] : null)
     },[product])
-
+    if(loading){
+        return ( <Loading/> )
+     }
     return product && (
         <div className="mt-12">
             <p>

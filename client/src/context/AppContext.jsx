@@ -22,6 +22,8 @@ export const AppContextProvider = ({children})=>{
     const [cartItems, setCartItems] = useState({});
     const [searchQuery, setSearchQuery] = useState({})
 
+    const [loading, setLoading]= useState(true);
+
     // fetch seller status
     const fetchSeller = async()=>{
         try {
@@ -152,7 +154,7 @@ export const AppContextProvider = ({children})=>{
         showUserLogin, setShowUserLogin, products, currency,
          addToCart, updateCartItem, removeFromCart, cartItems,
         searchQuery, setSearchQuery,  getCartAmount, getCartCount,
-         axios, fetchProducts, setCartItems, deleteFromCart}
+         axios, fetchProducts, setCartItems, deleteFromCart, loading, setLoading}
     return <AppContext.Provider value={value}>
         {children}
     </AppContext.Provider>

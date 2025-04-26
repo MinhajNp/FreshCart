@@ -13,6 +13,10 @@ const AllProducts = () => {
             setFilteredProducts(products)
         }
     },[products, searchQuery])
+
+    useEffect(()=>{
+        window.scrollTo(0, 0);
+    },[])
   return (
     <div className='mt-16 flex flex-col'>
         <div className='flex flex-col items-end w-max'>
