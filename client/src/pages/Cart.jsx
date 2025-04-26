@@ -5,7 +5,7 @@ import toast from "react-hot-toast"
 
 const Cart = () => {
     const {products, currency, cartItems, removeFromCart, getCartCount, 
-        updateCartItem, navigate, getCartAmount, axios, user, setCartItems} = useAppContext()
+        updateCartItem, navigate, getCartAmount, axios, user, setCartItems, deleteFromCart} = useAppContext()
     const [cartArray, setCartArray] = useState([])
     const [addresses, setAddresses] = useState()   
     const [showAddress, setShowAddress] = useState(false) 
@@ -40,6 +40,9 @@ const Cart = () => {
 
     const placeOrder = async ()=>{
         try {
+            if(!user){
+                return toast.error("Please Login to Continue")
+            }
             if(!selectedAddress){
                 return toast.error("Please Select Delivery Address")
             }
@@ -132,7 +135,7 @@ const Cart = () => {
                             </div>
                         </div>
                         <p className="text-center">{currency}{product.offerPrice * product.quantity}</p>
-                        <button onClick={()=>removeFromCart(product._id)} className="cursor-pointer mx-auto">
+                        <button onClick={()=>deleteFromCart(product._id)} className="cursor-pointer mx-auto">
                             <img src={assets.remove_icon} alt="remove" 
                             className="inline-block w-6 h-6" />
                         </button>

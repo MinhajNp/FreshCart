@@ -84,7 +84,7 @@ export const AppContextProvider = ({children})=>{
         toast.success("Cart Updated")
     }
 
-    // Remove Product from cart
+    // Remove Product from cart (decresing the item quantity)
     const removeFromCart = (itemId)=>{
         let cartData = structuredClone(cartItems);
         if(cartData[itemId]){
@@ -93,8 +93,18 @@ export const AppContextProvider = ({children})=>{
                 delete cartData[itemId];
             }
         }
-        toast.success("Removed from Cart")
+        toast.success("Cart Updated")
         setCartItems(cartData);
+    }
+
+    // Delete from cart
+    const deleteFromCart = (itemId)=>{
+       let cartData = structuredClone(cartItems);
+        if(cartData[itemId]){
+            delete cartData[itemId];
+        }
+        toast.success("Removed from Cart")
+        setCartItems(cartData)
     }
 
     // Get cart item count
@@ -142,7 +152,7 @@ export const AppContextProvider = ({children})=>{
         showUserLogin, setShowUserLogin, products, currency,
          addToCart, updateCartItem, removeFromCart, cartItems,
         searchQuery, setSearchQuery,  getCartAmount, getCartCount,
-         axios, fetchProducts, setCartItems}
+         axios, fetchProducts, setCartItems, deleteFromCart}
     return <AppContext.Provider value={value}>
         {children}
     </AppContext.Provider>
