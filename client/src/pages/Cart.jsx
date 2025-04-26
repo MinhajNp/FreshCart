@@ -48,6 +48,7 @@ const Cart = () => {
             if(!selectedAddress){
                 return toast.error("Please Select Delivery Address")
             }
+            window.scrollTo(0, 0);
             setLoading(true);
             // place order with COD
             if(paymentOption==="COD"){
