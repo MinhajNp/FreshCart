@@ -36,27 +36,27 @@ export const placeOrderCOD = async (req, res)=>{
 }
 
 // Place Order Stripe : /api/order/stripe
-export const placeOrderStripe = async (req, res)=>{
+export const placeOrderStripe = async (req, res) => {
     try {
-        const {userId, items, address} = req.body;
-        const {origin} = req.headers;
- 
-        if(!address || items.length===0){
-            return res.json({success:false, message: "Invalid Data"})
+        const { userId, items, address } = req.body;
+        const { origin } = req.headers;
+
+        if (!address || items.length === 0) {
+            return res.status(400).json({ success: false, message: "Invalid Data" });
         }
 
         let productData = [];
+        let amount = 0;
 
-        // calculate amount using items
-        let amount =await items.reduce(async(acc, item)=>{
+        for (const item of items) {
             const product = await Product.findById(item.product);
             productData.push({
                 name: product.name,
                 price: product.offerPrice,
                 quantity: item.quantity
-            })
-            return (await acc) + product.offerPrice * item.quantity;
-        },0)
+            });
+            amount += product.offerPrice * item.quantity;
+        }
 
         // Add Tax Charge (2%)
         amount += Math.floor(amount * 0.02);
@@ -69,41 +69,35 @@ export const placeOrderStripe = async (req, res)=>{
             paymentType: "Online",
         });
 
-        // Stripe Gateway Initialize
-        const stripeInstace = new stripe(process.env.STRIPE_SECRET_KEY)
+        const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
 
-        // create line items for stripe
-        const line_items = productData.map((item)=>{
-            return {
-                price_data: {
-                    currency: "usd",
-                    product_data: {
-                        name: item.name,
-                    },
-                    unit_amount: Math.floor(item.price + item.price * 0.02) * 100
-                },
-                quantity: item.quantity,
-            }
-        })
+        const line_items = productData.map(item => ({
+            price_data: {
+                currency: "usd",
+                product_data: { name: item.name },
+                unit_amount: Math.floor(item.price + item.price * 0.02) * 100
+            },
+            quantity: item.quantity,
+        }));
 
-        // create session
-        const session = await stripeInstace.checkout.sessions.create({
+        const session = await stripeInstance.checkout.sessions.create({
             line_items,
             mode: 'payment',
             success_url: `${origin}/loader?next=my-orders`,
             cancel_url: `${origin}/cart`,
             metadata: {
-                orderId : order._id.toString(),
+                orderId: order._id.toString(),
                 userId,
             }
-        })
+        });
 
+        return res.json({ success: true, url: session.url });
 
-        return res.json({success:true, url : session.url})
     } catch (error) {
-        return res.json({success:false, message: error.message})
+        console.error(error);
+        return res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
 // Stripe webhooks to verify payments action : /stripe
 export const stripeWebHooks = async (request, response)=>{
