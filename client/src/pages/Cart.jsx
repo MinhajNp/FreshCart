@@ -49,7 +49,7 @@ const Cart = () => {
                 return toast.error("Please Select Delivery Address")
             }
             window.scrollTo(0, 0);
-            setLoading(true);
+            
             // place order with COD
             if(paymentOption==="COD"){
                 const {data} = await axios.post('/api/order/cod',{
@@ -60,7 +60,7 @@ const Cart = () => {
                     })),
                         address: selectedAddress._id
                 })
-                setLoading(false)
+                
                 if(data.success){
                     toast.success(data.message)
                     setCartItems({})
@@ -78,7 +78,7 @@ const Cart = () => {
                     })),
                         address: selectedAddress._id
                 })
-                setLoading(false)
+                
                 if(data.success){
                     window.location.replace(data.url)
                 }else{
@@ -100,9 +100,7 @@ const Cart = () => {
             getUserAddress();
         }
     },[user])
-    if(loading){
-           return ( <Loading/> )
-        }
+    
     return products.length > 0 && cartItems ?(
         <div className="flex flex-col md:flex-row mt-16">
             <div className='flex-1 max-w-4xl'>

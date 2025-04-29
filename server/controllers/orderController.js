@@ -100,6 +100,7 @@ export const placeOrderStripe = async (req, res) => {
 
 // Stripe webhooks to verify payments action : /stripe
 export const stripeWebHooks = async (request, response)=>{
+    console.log("inside stripewebhooks")
     // stripe gateway initialize
     const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY)
     const sig = request.headers["stripe-signature"]
@@ -137,7 +138,7 @@ export const stripeWebHooks = async (request, response)=>{
             const paymentIntentId = paymentIntent.id
 
             // getting session metadata
-            const session = await stripeInstace.checkout.sessions.list({
+            const session = await stripeInstance.checkout.sessions.list({
                 payment_intent: paymentIntentId,
             });
 
